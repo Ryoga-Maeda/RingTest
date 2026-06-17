@@ -1,0 +1,15 @@
+agent: decomposer
+# decomposer は sprint/tasks/ 配下に *.md と DAG を生成する。
+# tasks/ 自体の存在のみ担保し、個別ファイル検査は scripts/plan-waves.sh へ委譲する。
+required_artifacts:
+  - path: sprint/tasks
+    must_exist: true
+required_state_updates:
+  - jq_path: ".contract.agreed"
+    must_be_type: "boolean"
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "完了したつもり"
+  - "やってない"
+  - "DAG は不要"

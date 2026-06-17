@@ -1,0 +1,19 @@
+agent: evaluator
+# evaluator は Web/Android/CLI の実機操作で SPRINT.md の合格基準を1件ずつ採点する。
+# 採点根拠（スクリーンショット/ログ）は sprint/evaluator_evidence/ に置き、
+# 集計結果は state.evaluator_scores に書く。
+required_artifacts:
+  - path: sprint/evaluator_evidence
+    must_exist: true
+required_state_updates:
+  - jq_path: ".evaluator_scores"
+    must_be_type: "object"
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "完了したつもり"
+  - "やってない"
+  - "実機確認は不要"
+  - "実機操作は省略"
+  - "コードを読んで PASS と判断"
+  - "テストが green なので PASS"

@@ -1,0 +1,14 @@
+agent: designer
+# designer は sub_phase=implement で sprint/SPRINT.md を起草し、
+# sub_phase=improve では IMPROVE_BRIEF.md を起点に修正方針を SPRINT.md へ追補する。
+# 双方とも SPRINT.md が結果的に存在するため、その存在のみ最低限担保する。
+required_artifacts:
+  - path: sprint/SPRINT.md
+    must_exist: true
+    must_not_be_empty: true
+required_state_updates: []
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "完了したつもり"
+  - "やってない"

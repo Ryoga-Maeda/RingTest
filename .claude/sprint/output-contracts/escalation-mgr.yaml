@@ -1,0 +1,7 @@
+agent: escalation-mgr
+required_artifacts: []
+required_state_updates: []
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "もしかしたら"

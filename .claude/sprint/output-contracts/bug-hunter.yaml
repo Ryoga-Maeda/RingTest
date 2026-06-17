@@ -1,0 +1,15 @@
+agent: bug-hunter
+required_artifacts:
+  - path: sprint/IMPROVE_FINDINGS.md
+    must_exist: true
+    must_not_be_empty: false  # バグなしの場合は空でも可
+    schema:
+      required_sections: ["F-"]  # F-001 形式の見出しが 0 件 = バグなし
+forbidden_patterns:
+  - "おそらく"
+  - "原因は"          # bug-hunter は原因分析を書いてはならない
+  - "修正方法"
+  - "P1"
+  - "P2"
+  - "P3"
+  - "優先度"

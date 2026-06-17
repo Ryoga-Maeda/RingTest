@@ -1,0 +1,66 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/sprint/hooks/session-start.sh" }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|Bash",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/sprint/hooks/pre-task.sh" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/sprint/hooks/pre-tool-use.sh" }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/sprint/hooks/pre-tool-use-task.sh" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|Bash",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/sprint/hooks/post-task.sh" }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/sprint/hooks/post-tool-use-task.sh" }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash .claude/sprint/hooks/phase-advance.sh" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash .claude/sprint/hooks/on-stop.sh" }
+        ]
+      }
+    ]
+  },
+  "env": {
+    "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "400000",
+    "API_TIMEOUT_MS": "300000",
+    "CLAUDE_CODE_MAX_RETRIES": "10",
+    "CLAUDE_ENABLE_STREAM_WATCHDOG": "1"
+  }
+}

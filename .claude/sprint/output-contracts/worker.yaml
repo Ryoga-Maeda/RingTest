@@ -1,0 +1,19 @@
+agent: worker
+# worker は1タスク × TDD（RED→GREEN→REFACTOR）で実装する。
+# 成果物パスはタスクごとに異なるため、契約では作話兆候・R6 違反（git/worktree 直接操作）の検出を主目的とする。
+# タスクローカルの tdd_phase 検証は post-task.sh 側で行う。
+required_artifacts: []
+required_state_updates: []
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "完了したつもり"
+  - "やってない"
+  - "テストは後で書く"
+  - "TDD は省略"
+  - "REFACTOR は不要"
+  - "git worktree add"
+  - "git worktree remove"
+  - "git push"
+  - "git commit"
+  - "--no-verify"
