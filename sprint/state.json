@@ -8,7 +8,7 @@
   "started_at": "2026-06-17T15:00:00Z",
   "last_checkpoint": null,
   "v2_active": true,
-  "phase_advance_last_fired_at": 1781708507008,
+  "phase_advance_last_fired_at": 0,
   "contract": {
     "agreed": false,
     "agreed_at": null,
