@@ -42,3 +42,35 @@
 - `sprint/state.json` (v2 スキーマ・run_state=RUNNING)
 - `sprint/PRODUCT.md` / `SPRINT.md` / `checkpoint.md` / `DECISIONS.md`（スタブ）
 - `tests/test_isolation.sh` PASS=56 を再現可能
+
+---
+
+## 追補: CLARIFY → DESIGN 遷移の実機検証 (2026-06-17 追加)
+
+### 実施フロー
+
+1. PRODUCT.md スタブを削除 → `phase-advance-eval` が `clarifier サブエージェントを起動してください` を返すことを確認
+2. Task ツールで `clarifier` を起動（goal: 「ClaudeRing V2 自律スプリント開発アーキテクチャの実機動作テスト」）
+3. clarifier が `sprint/PRODUCT.md` を必須 4 セクション（目的 / 利用者像 / 成功条件 / スコープ外）で確定
+4. `phase-advance-eval` 再実行 → 指示が `AskUserQuestion で CLARIFY→DESIGN 承認を求めてください` に切替
+5. AskUserQuestion で Human ゲート承認を取得
+6. `gate_approvals.CLARIFY_TO_DESIGN=true` を `jq + flock + atomic mv` で state.json に書込
+7. `scripts/phase-advance-apply.sh` 実行 → `applied: DESIGN / implement` を出力
+8. state.json: `phase=CLARIFY` → `phase=DESIGN` に遷移、`sprint/phase_log.jsonl` に遷移ログ追記
+
+### 検証結果
+
+| チェック | 結果 |
+|---------|------|
+| clarifier 起動指示が出る | ✅ |
+| clarifier の Task 起動 → PRODUCT.md Write | ✅ |
+| eval 再評価で AskUserQuestion ゲート指示に切替 | ✅ |
+| AskUserQuestion で Human 承認取得 | ✅ |
+| gate_approvals 書込 → phase-advance-apply で遷移 | ✅ |
+| phase_log.jsonl に追記 | ✅ |
+
+### 追加観測
+
+- **clarifier の tools 配列に Bash が無いため、agent 定義の「`jq + flock + mktemp + mv` で atomic に state.json 更新」を clarifier 自身では実行不可**。今回は Orchestrator 役が代理書込した。これは V2 spec と tools 配列の整合性ズレ。
+- **DESIGN 遷移直後の eval は `designer` ではなく `decomposer` を返す**。理由は G3（スタブ SPRINT.md の存在判定）。CLARIFY と同じパターンで designer が一度も起動されない経路に逸れる。
+- `phase_advance_last_fired_at` は `phase-advance-apply.sh` 単体実行では更新されない（PhaseAdvance フックラッパ側の責務と思われる）。

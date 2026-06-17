@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "sprint_id": "sprint-1",
-  "phase": "CLARIFY",
+  "phase": "DESIGN",
   "sub_phase": "implement",
   "improve_iteration": 0,
   "run_state": "RUNNING",
@@ -39,7 +39,9 @@
   },
   "subagent_health": {},
   "subagent_heartbeats": {},
-  "gate_approvals": {},
+  "gate_approvals": {
+    "CLARIFY_TO_DESIGN": true
+  },
   "persona": {
     "id": "azato-cute",
     "name": "あざとかわいいのあいり 💖",
