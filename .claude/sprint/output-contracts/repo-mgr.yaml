@@ -1,0 +1,9 @@
+agent: repo-mgr
+required_artifacts: []
+required_state_updates: []
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "--force"
+  - "--no-verify"
+  - "git push -f"

@@ -1,0 +1,31 @@
+agent: investigator
+required_artifacts:
+  - path: sprint/IMPROVE_BRIEF.md
+    must_exist: true
+    must_not_be_empty: true
+    schema:
+      required_sections:
+        - "全体傾向"
+        - "修正項目テーブル"
+        - "依存・順序ヒント"
+      table_columns:
+        - ID
+        - 症状
+        - 根本原因
+        - 影響範囲
+        - 失敗分類
+        - 優先度
+required_state_updates:
+  - jq_path: ".triage_artifacts.brief_path"
+    must_equal: "sprint/IMPROVE_BRIEF.md"
+  - jq_path: ".triage_artifacts.p1_count"
+    must_be_type: "number"
+  - jq_path: ".triage_artifacts.p2_count"
+    must_be_type: "number"
+  - jq_path: ".triage_artifacts.p3_count"
+    must_be_type: "number"
+forbidden_patterns:
+  - "やってない"
+  - "完了したつもり"
+  - "おそらく動く"
+  - "たぶん"

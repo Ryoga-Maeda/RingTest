@@ -1,0 +1,13 @@
+agent: executor
+# executor はウェーブ起動の薄殻調整役。固有の成果物ファイルは持たず、
+# 各 worker/reviewer/evaluator が個別に成果を出す。契約は作話・規律違反の語彙のみ検査する。
+required_artifacts: []
+required_state_updates: []
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "完了したつもり"
+  - "やってない"
+  - "Reviewer はスキップ"
+  - "git worktree"
+  - "git push"

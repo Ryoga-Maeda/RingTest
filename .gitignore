@@ -1,0 +1,10 @@
+
+# --- sprint-claude（自律スプリント開発アーキテクチャ） ---
+.claude/worktrees/
+.claude/settings.local.json
+sprint/.session-out.log
+sprint/*.lock
+sprint/*.lock.d/
+sprint/tasks/*.status.json
+sprint/tasks/*.lock
+sprint/tasks/*.lock.d/

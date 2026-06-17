@@ -1,0 +1,14 @@
+agent: integrator
+# integrator は全 COMPLETE ブランチを root へマージし PR を作成する。
+# PR URL は state.integrate.pr_url に書かれる。
+required_artifacts: []
+required_state_updates: []
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "完了したつもり"
+  - "やってない"
+  - "--force"
+  - "--no-verify"
+  - "git push -f"
+  - "conflict は無視"

@@ -1,0 +1,13 @@
+agent: clarifier
+# clarifier は sub_phase=implement では sprint/PRODUCT.md、
+# sub_phase=improve では sprint/IMPROVE.md を生成する。
+# required_artifacts は条件分岐できないため、サブフェーズ依存の必須出力は
+# phase-advance-eval.sh 側のファイル存在判定に委ね、契約では作話兆候のみ検査する。
+required_artifacts: []
+required_state_updates: []
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "完了したつもり"
+  - "やってない"
+  - "存在しないと思う"

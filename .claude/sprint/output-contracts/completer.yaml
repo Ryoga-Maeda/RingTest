@@ -1,0 +1,11 @@
+agent: completer
+# completer は完走レポート（development/archive/ 配下 or sprint/REPORT.md）を生成する。
+# レポートの正確なパスはスプリント運用で揺れるため、契約では state.complete.report_path の型のみ確認する。
+required_artifacts: []
+required_state_updates: []
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "完了したつもり"
+  - "やってない"
+  - "レポートは省略"

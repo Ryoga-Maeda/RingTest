@@ -1,0 +1,14 @@
+agent: reviewer
+# reviewer は2段階レビュー（Stage1 仕様準拠 / Stage2 コード品質）を実施する。
+# 「問題・理由・修正」の3点セット全件報告原則を language 面でも軽くガードする。
+required_artifacts: []
+required_state_updates: []
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "完了したつもり"
+  - "やってない"
+  - "特に問題なし"
+  - "目視確認のみ"
+  - "Stage2 は省略"
+  - "Stage1 のみで十分"

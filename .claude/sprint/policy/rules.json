@@ -1,0 +1,71 @@
+{
+  "version": "1.1",
+  "description": "強制レイヤー ポリシーレジストリ（V2 L1 フレームワークヘッダの R0〜R6 と1対1対応）。経路ベースの規則は pre-task.sh が Bash コマンドの書込先も抽出して検査する（§7.6）。",
+  "rules": [
+    {
+      "id": "R1-spec-first",
+      "severity": "critical",
+      "enforce": "deny",
+      "when": "tool_name matches /^(Write|Edit)$/ AND file_path matches /src\\//",
+      "check": "spec_loaded.sh",
+      "desc": "SPRINT.md 未確定（contract.agreed≠true）でのコード変更を禁止"
+    },
+    {
+      "id": "R2-worktree-boundary",
+      "severity": "critical",
+      "enforce": "deny",
+      "when": "tool_name matches /^(Write|Edit|Bash)$/",
+      "check": "worktree_boundary.sh",
+      "desc": "担当 worktree 外のファイル変更を禁止（sprint/ 制御面は R5/R0 で別途保護）"
+    },
+    {
+      "id": "R3-no-test-tampering",
+      "severity": "high",
+      "enforce": "deny",
+      "when": "tool_name matches /^(Edit|Bash)$/ AND target matches /test|spec/",
+      "check": "test_guard.sh",
+      "desc": "GREEN 化目的のテスト改変を禁止（tdd_phase != RED のとき）。Bash の sed -i / リダイレクトによる改変も検査"
+    },
+    {
+      "id": "R4-escalate-3fail",
+      "severity": "high",
+      "enforce": "deny",
+      "when": "tool_name matches /^(Write|Edit|Bash)$/",
+      "check": "failure_gate.sh",
+      "desc": "同一タスク3回失敗後は ESCALATION まで実装ツールを停止"
+    },
+    {
+      "id": "R5-phase-gate",
+      "severity": "critical",
+      "enforce": "deny",
+      "when": "tool_name matches /^(Write|Edit|Bash)$/ AND target matches /(state\\.json|gate_approvals\\.json)/",
+      "check": "gate_approval.sh",
+      "desc": "Human 未承認の CLARIFY→DESIGN ゲート越え（.phase を CLARIFY 以外へ変更）を禁止＋承認記録ファイル(gate_approvals.json)の自己改変を禁止。Bash 経由の state.json 書換も検査（内容不明時は fail-closed）"
+    },
+    {
+      "id": "R0-self-protect",
+      "severity": "critical",
+      "enforce": "deny",
+      "when": "tool_name matches /^(Write|Edit|Bash)$/ AND target matches /\\.claude\\/sprint\\/(policy|hooks)\\//",
+      "check": "self_protect.sh",
+      "desc": "ポリシー・フック自体の書き換えを常時禁止（改ざん防止）"
+    },
+    {
+      "id": "R3'",
+      "key": "R3prime",
+      "severity": "high",
+      "enforce": "deny",
+      "when": "sub_phase=improve AND tool_name=Bash AND target matches /git\\s+commit/",
+      "check": "r3prime_check.sh",
+      "desc": "改善フェーズ（sub_phase=improve）の I-* タスクは、最初の commit がテストファイルのみであり、かつそのテストが当該タスクの worktree で RED で実行されていること",
+      "enforcement": "pre-commit + worker output-contract",
+      "scope": "sub_phase=improve"
+    }
+  ],
+  "R3prime": {
+    "id": "R3'",
+    "description": "改善フェーズ（sub_phase=improve）の I-* タスクは、最初の commit がテストファイルのみであり、かつそのテストが当該タスクの worktree で RED で実行されていること",
+    "enforcement": "pre-commit + worker output-contract",
+    "scope": "sub_phase=improve"
+  }
+}

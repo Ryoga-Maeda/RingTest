@@ -1,0 +1,12 @@
+agent: generator
+# generator はスプリント契約案を提示し、合意できたら contract.agreed=true を書き戻す。
+required_artifacts: []
+required_state_updates:
+  - jq_path: ".contract.agreed"
+    must_be_type: "boolean"
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "完了したつもり"
+  - "やってない"
+  - "契約合意は省略"

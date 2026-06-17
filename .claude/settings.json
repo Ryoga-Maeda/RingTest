@@ -1,0 +1,20 @@
+{
+  "language": "ja",
+  "env": {
+    "ANTHROPIC_CACHE_TTL": "1h"
+  },
+  "_hooks_note": "規律フック（PreToolUse/PostToolUse/Stop 等）はここに置かず .claude/sprint/settings.json に隔離する（スプリント時のみ settings.local.json 経由で有効化）。ルートに許可するのは通常開発中もキャラの語り口を継続させる無害な SessionStart（persona-ambient.sh）のみ。これは state.json に persona があるときだけ語り口を注入する装飾で、判断・規律には影響せず SPRINT_PERSONA=off で無効化できる。matcher に compact を含めるのは、コンテキスト圧縮（自動/手動 compact）後の再開でペルソナ定義（語尾・口癖）がコンテキストから消え、モデルが事前知識の典型語尾で補完して語尾が混線するのを防ぐため＝圧縮後にも語り口を再注入する。persona-ambient.sh は state を変更しない装飾なので compact 発火でも冪等・安全。",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/sprint/hooks/persona-ambient.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

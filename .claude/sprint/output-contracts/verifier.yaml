@@ -1,0 +1,13 @@
+agent: verifier
+# verifier は evaluator を起動して全合格基準を採点し、state.evaluator_scores に集約する。
+required_artifacts: []
+required_state_updates:
+  - jq_path: ".evaluator_scores"
+    must_be_type: "object"
+forbidden_patterns:
+  - "おそらく"
+  - "たぶん"
+  - "完了したつもり"
+  - "やってない"
+  - "採点は省略"
+  - "実機確認は不要"
