@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "sprint_id": "sprint-1",
-  "phase": "DESIGN",
+  "phase": "EXECUTE",
   "sub_phase": "implement",
   "improve_iteration": 0,
   "run_state": "RUNNING",
@@ -10,12 +10,29 @@
   "v2_active": true,
   "phase_advance_last_fired_at": 0,
   "contract": {
-    "agreed": false,
-    "agreed_at": null,
-    "iteration": 0,
+    "agreed": true,
+    "agreed_at": "2026-06-17T15:19:04Z",
+    "iteration": 1,
     "max_iterations": 15
   },
-  "tasks": {},
+  "tasks": {
+    "task-1": {
+      "status": "PENDING",
+      "depends_on": [],
+      "touches": [
+        "sprint/SPRINT.md"
+      ],
+      "merged": false
+    },
+    "task-2": {
+      "status": "PENDING",
+      "depends_on": [],
+      "touches": [
+        "sprint/artifacts/smoke.txt"
+      ],
+      "merged": false
+    }
+  },
   "resilience": {
     "consecutive_tool_failures": 0,
     "persist_failed": false,
