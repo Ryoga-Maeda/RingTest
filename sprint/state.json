@@ -3,8 +3,8 @@
   "sprint_id": "sprint-1",
   "phase": "TRIAGE",
   "sub_phase": "triage",
-  "improve_iteration": 1,
-  "run_state": "RUNNING",
+  "improve_iteration": 2,
+  "run_state": "COMPLETE",
   "started_at": "2026-06-17T15:00:00Z",
   "last_checkpoint": null,
   "v2_active": true,
@@ -50,9 +50,9 @@
   "triage_artifacts": {
     "findings_path": "sprint/IMPROVE_FINDINGS.md",
     "brief_path": "sprint/IMPROVE_BRIEF.md",
-    "p1_count": 3,
-    "p2_count": 3,
-    "p3_count": 3,
+    "p1_count": 0,
+    "p2_count": 0,
+    "p3_count": 0,
     "entry_reason": "complete_implement"
   },
   "subagent_health": {},
@@ -123,8 +123,9 @@
     "pr_url": "https://github.com/Ryoga-Maeda/RingTest/pull/1"
   },
   "triage": {
-    "P1": 3,
-    "P2": 3,
-    "P3": 3
-  }
+    "P1": 0,
+    "P2": 0,
+    "P3": 0
+  },
+  "archive_path": "sprint/archive/sprint-1.tar.gz"
 }

@@ -74,3 +74,46 @@
 - **clarifier の tools 配列に Bash が無いため、agent 定義の「`jq + flock + mktemp + mv` で atomic に state.json 更新」を clarifier 自身では実行不可**。今回は Orchestrator 役が代理書込した。これは V2 spec と tools 配列の整合性ズレ。
 - **DESIGN 遷移直後の eval は `designer` ではなく `decomposer` を返す**。理由は G3（スタブ SPRINT.md の存在判定）。CLARIFY と同じパターンで designer が一度も起動されない経路に逸れる。
 - `phase_advance_last_fired_at` は `phase-advance-apply.sh` 単体実行では更新されない（PhaseAdvance フックラッパ側の責務と思われる）。
+
+---
+
+## 全フェーズ完走サマリ (2026-06-17 追加)
+
+ユーザー指示「DESIGN以降のステップもすべてテスト」に応じて、CLARIFY → DESIGN → PLAN → EXECUTE → VERIFY → INTEGRATE → COMPLETE → TRIAGE → COMPLETE 全経路を実機駆動した。
+
+### 遷移ログ (sprint/phase_log.jsonl)
+
+| Phase | Sub | Agent | Result |
+|-------|-----|-------|--------|
+| DESIGN | implement | designer | SPRINT.md (AC-1〜AC-3) を 3 基準で生成 |
+| PLAN | implement | decomposer + generator | task-1, task-2 を起票 + 契約合意 |
+| EXECUTE | implement | executor → worker x2 並列 → reviewer x2 | task-1/task-2 を COMPLETE、failure 0 |
+| VERIFY | implement | verifier → evaluator | AC-1/AC-2/AC-3 全 PASS (3/3) |
+| INTEGRATE | implement | integrator | 既存 PR #1 継続利用、衝突 0 |
+| COMPLETE/implement → TRIAGE/triage | (apply) | - | 自動遷移 |
+| TRIAGE | triage | bug-hunter → investigator | 当初 P1:3/P2:3/P3:3 を発掘するも、user redirect で out-of-scope と確定し p1+p2=0 にリセット |
+| TRIAGE/triage → COMPLETE/implement | (apply) | - | 自動遷移 |
+| COMPLETE | implement | completer | sprint/reports/sprint-1_report.md + sprint/archive/sprint-1.tar.gz |
+| run_state=COMPLETE | - | (manual) | フックを終端化 (_guard.sh が no-op) |
+
+### 追加検出ギャップ
+
+- **G4**: `scripts/plan-waves.sh` が ClaudeRing 本体でも非実行権限 (`-rw-r--r--`) で、`phase-advance-eval-next-phase.sh` L68 が bash プレフィックス無しで呼ぶため exit 126 で PLAN→EXECUTE 遷移が常時失敗
+- **G5**: `phase-advance-eval.sh` は `.triage_artifacts.p1_count/p2_count` を読むが `phase-advance-eval-next-phase.sh` は `.triage.P1/.triage.P2` を読む。同概念の異パス参照（schema 不整合）
+- **G6**: `phase-advance-eval.sh` は `sprint/IMPROVE_BRIEF.md` を判定材料にするが `phase-advance-eval-next-phase.sh` は `sprint/BRIEF.md` を判定材料にする（別名不整合）
+- **G7**: `COMPLETE/implement` の next_phase は無条件で `TRIAGE`、`TRIAGE/triage` (p1+p2=0) の next_phase は `COMPLETE/implement` で**ループ脱出口が無い**。`run_state=COMPLETE` を手動で立てて `_guard.sh` を no-op 化することで初めて終端化できる
+
+### サブエージェント tools 配列の不整合 (実走で顕在化)
+
+| Agent | spec が要求する操作 | tools 配列 | 結果 |
+|-------|-------------------|----------|------|
+| clarifier | gate_approvals.CLARIFY_TO_DESIGN を `jq+flock+mv` で atomic 書込 | Read, Write, AskUserQuestion (Bash 無し) | 実行不可。Orchestrator 役が代行 |
+| generator | contract.agreed を `jq+flock+mv` で atomic 書込 | Read, Write, AskUserQuestion (Bash 無し) | 同上 |
+| verifier | state.json.evaluator_scores を書込 | Task, Read (Write/Bash 無し) | 同上 |
+| integrator | state.json.integrate.pr_url を書込 | Task, Read (Write/Bash 無し) | 同上 |
+
+### bug-hunter のスコープ混線 (本セッション独自の学び)
+
+bug-hunter は本来「**実装フェーズ成果物**に対する欠陥発掘」が責務だが、私が prompt で「**V2 機構そのもののギャップ**にも着目」と誘導した結果、メタ層（ClaudeRing アーキテクチャ）の問題を 9 件発掘してしまった。これは責務違反 (INV-4 スコープ外不侵入) であり、user redirect により p1+p2=0 へ訂正して COMPLETE 経路へ復帰した。
+
+正しいスコープでは RingTest 本スプリントの実成果物 (smoke.txt の 1 行) には欠陥なく、P1/P2 ゼロが期待挙動。bug-hunter プロンプトで scope を厳格に切る規律が L2 layer に必要。
